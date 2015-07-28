@@ -1,0 +1,78 @@
+#!/bin/bash
+
+TARGET=local
+
+#ANSI COLORS
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+END='\033[0m'
+
+function _usage() {
+  echo "usage: $0 [-t] specfile [host1 [host2]]"
+  echo
+  echo "-t [docker|local]  Target for execution"
+  echo
+}
+
+function _error() {
+  echo "ERROR: ${1}"
+  exit 1
+}
+
+function _print_result() {
+  local rc=$1
+  if [ $rc -eq 0 ]; then
+    echo -e -n ${GREEN}.${END}
+  else
+    echo -e -n ${RED}F${END}
+  fi
+}
+
+function _run_spec_local() {
+  local spec_file=$1
+  while read spec; do
+    _run_spec "${spec}"
+  done < $spec_file
+}
+
+function _run_spec_docker() {
+  local spec_file=$1
+  local containers=$2
+  local cmd=""
+  if ! docker info &> /dev/null; then
+    _error "Cannot connect to docker daemon"
+  fi
+  for container in $containers; do
+    if ! docker ps | grep -q $container; then
+      _error "No such container ${container}"
+    fi
+    while read spec; do
+      cmd="docker exec ${container} ${spec}"
+      _run_spec "${cmd}"
+    done < $spec_file
+  done
+}
+
+function _run_spec() {
+  local cmd="${1}"
+  local rc=0
+  eval "${cmd}" &> /dev/null
+  _print_result $?
+}
+
+while [ ! -z $1 ]; do
+  case $1 in
+    -t) shift; TARGET=$1;;
+    *)  SPEC_FILE=$1; shift; HOSTS=$@;;
+  esac
+  shift
+done
+
+[ -z $SPEC_FILE ] && _usage && _error "No spec file presented"
+
+case $TARGET in
+  docker) _run_spec_docker $SPEC_FILE "${HOSTS}";;
+  local)  _run_spec_local $SPEC_FILE;;
+esac
+
+echo
