@@ -1,0 +1,3 @@
+test:
+  override:
+    - ./shrift_test.sh
