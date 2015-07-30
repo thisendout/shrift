@@ -16,7 +16,7 @@ function _usage() {
 }
 
 function _error() {
-  echo "ERROR: ${1}"
+  echo -e "${RED}ERROR${END}: ${1}"
   exit 1
 }
 
@@ -70,7 +70,7 @@ while [ ! -z $1 ]; do
   shift
 done
 
-[ -z $SPEC_FILE ] && _usage && _error "No spec file presented"
+[ -z $SPEC_FILE ] && _usage && _error "No spec file given"
 
 case $TARGET in
   docker) _run_spec_docker $SPEC_FILE "${HOSTS}";;
