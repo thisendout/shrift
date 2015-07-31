@@ -15,7 +15,7 @@ assert "_print_cmd_summary 1 'bad'" "${RED}Failure 1${END}: bad"
 assert "_print_cmd_summary 255 'also bad'" "${RED}Failure 255${END}: also bad"
 
 # test _print_cmd_output
-t=$(mktemp)
+t=$(mktemp test/tmp.XXX)
 echo -e "command not found: banana" > $t
 assert "_print_cmd_output $t" "  command not found: banana\n"
 echo -e "command not found: barnana" >> $t

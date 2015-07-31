@@ -8,7 +8,7 @@ END='\033[0m'
 function _usage() {
   echo "usage: $0 [args] specfile"
   echo
-  echo "-h                 This help screen"
+  echo "-h                 Help"
   echo "-d [docker|local]  Execution driver (default: local)"
   echo "-t [target]        Target for execution (host/container)"
   echo "-v                 Enable verbose output"
@@ -55,7 +55,7 @@ function _main() {
   local total_specs=0
   local failed_specs=0
   local result_summary=""
-  local cmd_result=$(mktemp)
+  local cmd_result=$(mktemp /tmp/$0.XXX)
   local exit_status=0
 
   # loop through specs
@@ -95,7 +95,7 @@ function _main() {
 
   # cleanup
   rm $cmd_result
-  
+
   # return exit code
   return $exit_status
 }
@@ -113,7 +113,7 @@ if [[ $(basename ${0//-/}) == "shrift" ]]; then
     esac
     shift
   done
-  
+
   # test cli arg completeness
   if [ -z $spec_file ]; then
     _usage && _error "No spec file given"
@@ -134,10 +134,10 @@ if [[ $(basename ${0//-/}) == "shrift" ]]; then
   elif [ ! -z "${driver}" ] && [[ $driver != "local" ]]; then
     _error "Invalid driver specified: ${driver}"
   fi
-  
+
   # run entrypoint
   # wrap args in quotes to avoid assignment issues
   _main "${spec_file}" "${driver}" "${target}" "${verbose}"
-  
+
   exit $?
 fi
