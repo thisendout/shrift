@@ -1,17 +1,17 @@
 #!/bin/bash
 
-TARGET=local
-
 #ANSI COLORS
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 END='\033[0m'
 
 function _usage() {
-  echo "usage: $0 [-t] specfile [host1 [host2]]"
+  echo "usage: $0 [args] specfile"
   echo
-  echo "-h                 This help screen"
-  echo "-t [docker|local]  Target for execution (default: local)"
+  echo "-h                 Help"
+  echo "-d [docker|local]  Execution driver (default: local)"
+  echo "-t [target]        Target for execution (host/container)"
+  echo "-v                 Enable verbose output"
   echo
 }
 
@@ -20,62 +20,124 @@ function _error() {
   exit 1
 }
 
-function _print_result() {
+function _print_cmd_summary() {
   local rc=$1
-  if [ $rc -eq 0 ]; then
+  local cmd=$2
+  if [[ $rc == 0 ]]; then
+    echo -e "${GREEN}Success 0${END}: ${cmd}"
+  else
+    echo -e "${RED}Failure ${rc}${END}: ${cmd}"
+  fi
+}
+
+function _print_cmd_output() {
+  while read line; do
+    echo "  ${line}"
+  done < $1
+}
+
+function _print_dot() {
+  if [ $1 -eq 0 ]; then
     echo -e -n ${GREEN}.${END}
   else
     echo -e -n ${RED}F${END}
   fi
 }
 
-function _run_spec_local() {
+function _main() {
+  # function arguments
   local spec_file=$1
+  local driver=${2:-'local'}
+  local target=${3:-''}
+  local verbose=${4:-0}
+
+  # function variables
+  local total_specs=0
+  local failed_specs=0
+  local result_summary=""
+  local cmd_result=$(mktemp /tmp/$0.XXX)
+  local exit_status=0
+
+  # loop through specs
   while read spec; do
-    _run_spec "${spec}"
-  done < $spec_file
-}
-
-function _run_spec_docker() {
-  local spec_file=$1
-  local containers=$2
-  local cmd=""
-  if ! docker info &> /dev/null; then
-    _error "Cannot connect to docker daemon"
-  fi
-  for container in $containers; do
-    if ! docker ps | grep -q $container; then
-      _error "No such container ${container}"
+    # skip comments
+    if echo $spec | grep -q '^#'; then
+      continue
     fi
-    while read spec; do
-      cmd="docker exec ${container} ${spec}"
-      _run_spec "${cmd}"
-    done < $spec_file
+
+    # form command string
+    case $driver in
+      docker) cmd="docker exec ${target} ${spec}";;
+      local)  cmd="${spec}";;
+    esac
+
+    # execute command
+    eval "${cmd}" &> $cmd_result
+    cmd_rc=$?
+
+    # handle results
+    let total_specs+=1
+    if [ $cmd_rc -ne 0 ]; then
+      exit_status=1
+      let failed_specs+=1
+      _print_cmd_summary $cmd_rc "${spec}"
+      _print_cmd_output $cmd_result
+    elif [[ $verbose == 1 ]]; then
+      _print_cmd_summary $cmd_rc "${spec}"
+      _print_cmd_output $cmd_result
+    fi
+    result_summary+=$(_print_dot $cmd_rc)
+  done < $spec_file
+
+  # display results
+  echo -e "\n${result_summary}"
+  echo "${total_specs} tests, ${failed_specs} failed"
+
+  # cleanup
+  rm $cmd_result
+
+  # return exit code
+  return $exit_status
+}
+
+# test if script is being called or sourced
+if [[ $(basename ${0//-/}) == "shrift" ]]; then
+  # parse cli args
+  while [ ! -z $1 ]; do
+    case $1 in
+      -h) _usage; exit 0;;
+      -d) shift; driver=$1;;
+      -t) shift; target=$1;;
+      -v) verbose=1;;
+      *)  spec_file=$1;;
+    esac
+    shift
   done
-}
 
-function _run_spec() {
-  local cmd="${1}"
-  local rc=0
-  eval "${cmd}" &> /dev/null
-  _print_result $?
-}
+  # test cli arg completeness
+  if [ -z $spec_file ]; then
+    _usage && _error "No spec file given"
+  fi
+  if [ ! -f $spec_file ]; then
+    _error "No such file exists: ${spec_file}"
+  fi
+  if [[ $driver == "docker" ]]; then
+    if [ -z $target ]; then
+      _usage && _error "No target container specified"
+    fi
+    if ! docker info &> /dev/null; then
+      _error "Cannot connect to docker daemon"
+    fi
+    if ! docker ps | grep -q $target; then
+      _error "No such container ${target}"
+    fi
+  elif [ ! -z "${driver}" ] && [[ $driver != "local" ]]; then
+    _error "Invalid driver specified: ${driver}"
+  fi
 
-while [ ! -z $1 ]; do
-  case $1 in
-    -h) _usage; exit 0;;
-    -t) shift; TARGET=$1;;
-    *)  SPEC_FILE=$1; shift; HOSTS=$@;;
-  esac
-  shift
-done
+  # run entrypoint
+  # wrap args in quotes to avoid assignment issues
+  _main "${spec_file}" "${driver}" "${target}" "${verbose}"
 
-[ -z $SPEC_FILE ] && _usage && _error "No spec file given"
-
-case $TARGET in
-  docker) _run_spec_docker $SPEC_FILE "${HOSTS}";;
-  local)  _run_spec_local $SPEC_FILE;;
-  *)      _usage; exit 0;;
-esac
-
-echo
+  exit $?
+fi

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source ./test/lib/assert.sh
-source ./shrift ./test/fixtures/blank_spec.sh
+source ./shrift
 
 # test _usage
 assert "_usage | head -n1 | cut -d ' ' -f1" "usage:"
@@ -9,20 +9,42 @@ assert "_usage | head -n1 | cut -d ' ' -f1" "usage:"
 # test _error
 assert "_error test" "${RED}ERROR${END}: test"
 
-# test _print_result
-assert "_print_result 0" "${GREEN}.${END}"
-assert "_print_result 1" "${RED}F${END}"
-assert "_print_result 255" "${RED}F${END}"
+# test _print_cmd_summary
+assert "_print_cmd_summary 0 'good'" "${GREEN}Success 0${END}: good"
+assert "_print_cmd_summary 1 'bad'" "${RED}Failure 1${END}: bad"
+assert "_print_cmd_summary 255 'also bad'" "${RED}Failure 255${END}: also bad"
 
-# test _run_spec
-assert "_run_spec true" "${GREEN}.${END}"
-assert "_run_spec false" "${RED}F${END}"
+# test _print_cmd_output
+t=$(mktemp test/tmp.XXX)
+echo -e "command not found: banana" > $t
+assert "_print_cmd_output $t" "  command not found: banana\n"
+echo -e "command not found: barnana" >> $t
+assert "_print_cmd_output $t" "  command not found: banana\n  command not found: barnana\n"
+rm $t
 
+# test _print_dot
+assert "_print_dot 0" "${GREEN}.${END}"
+assert "_print_dot 1" "${RED}F${END}"
+assert "_print_dot 255" "${RED}F${END}"
+
+# test _main output
+assert "_main test/fixtures/pass_spec.sh" "\n${GREEN}.${END}\n1 tests, 0 failed"
+assert "_main test/fixtures/fail_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}\n1 tests, 1 failed"
+assert "_main test/fixtures/pass_spec.sh local '' 1" "${GREEN}Success 0${END}: test -f ./shrift\n\n${GREEN}.${END}\n1 tests, 0 failed"
+
+# test runtime usage
 assert_raises "./shrift" 1
 assert_raises "./shrift -h" 0
 assert_raises "./shrift | grep -q 'usage: '" 0
 assert_raises "./shrift -h | grep -q 'usage: '" 0
-assert "./shrift test/fixtures/pass_spec.sh" "${GREEN}.${END}"
-assert "./shrift test/fixtures/fail_spec.sh" "${RED}F${END}"
+
+# test runtime output
+assert "./shrift test/fixtures/pass_spec.sh" "\n${GREEN}.${END}\n1 tests, 0 failed\n"
+assert "./shrift test/fixtures/fail_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}\n1 tests, 1 failed\n"
+assert "./shrift -v test/fixtures/pass_spec.sh" "${GREEN}Success 0${END}: test -f ./shrift\n\n${GREEN}.${END}\n1 tests, 0 failed\n"
+
+# test runtime return code
+assert_raises "./shrift test/fixtures/pass_spec.sh" 0
+assert_raises "./shrift test/fixtures/fail_spec.sh" 1
 
 assert_end examples
