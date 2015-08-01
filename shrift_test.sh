@@ -32,6 +32,8 @@ assert "_main test/fixtures/pass_spec.sh" "\n${GREEN}.${END}\n1 tests, 0 failed"
 assert "_main test/fixtures/fail_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}\n1 tests, 1 failed"
 assert "_main -v test/fixtures/pass_spec.sh" "# test/fixtures/pass_spec.sh\n${GREEN}Success 0${END}: test -f ./shrift\n\n${GREEN}.${END}\n1 tests, 0 failed"
 assert "_main test/fixtures" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}${GREEN}.${END}\n2 tests, 1 failed"
+assert "_main test/**/*_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}${GREEN}.${END}\n2 tests, 1 failed"
+assert "_main test/fixtures/*_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}${GREEN}.${END}\n2 tests, 1 failed"
 
 # test runtime usage
 assert_raises "./shrift -h" 0
