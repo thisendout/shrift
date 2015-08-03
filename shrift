@@ -6,7 +6,7 @@ GREEN='\033[0;32m'
 END='\033[0m'
 
 function _usage() {
-  echo "usage: $0 [args] specfile"
+  echo "usage: $0 [args] specfiles..."
   echo
   echo "-h                 Help"
   echo "-d [docker|local]  Execution driver (default: local)"
@@ -44,20 +44,8 @@ function _print_dot() {
   fi
 }
 
-function _main() {
-  # function arguments
-  local spec_file=$1
-  local driver=${2:-'local'}
-  local target=${3:-''}
-  local verbose=${4:-0}
-
-  # function variables
-  local total_specs=0
-  local failed_specs=0
-  local result_summary=""
-  local cmd_result=$(mktemp /tmp/$0.XXX)
-  local exit_status=0
-
+function _run_file() {
+  [ $verbose -eq 1 ] && echo "# ${1}"
   # loop through specs
   while read spec; do
     # skip comments
@@ -87,21 +75,14 @@ function _main() {
       _print_cmd_output $cmd_result
     fi
     result_summary+=$(_print_dot $cmd_rc)
-  done < $spec_file
-
-  # display results
-  echo -e "\n${result_summary}"
-  echo "${total_specs} tests, ${failed_specs} failed"
-
-  # cleanup
-  rm $cmd_result
-
-  # return exit code
-  return $exit_status
+  done < $1
 }
 
-# test if script is being called or sourced
-if [[ $(basename ${0//-/}) == "shrift" ]]; then
+function _main() {
+  driver='local'
+  verbose=0
+  spec_files=()
+
   # parse cli args
   while [ ! -z $1 ]; do
     case $1 in
@@ -109,18 +90,15 @@ if [[ $(basename ${0//-/}) == "shrift" ]]; then
       -d) shift; driver=$1;;
       -t) shift; target=$1;;
       -v) verbose=1;;
-      *)  spec_file=$1;;
+      *)  spec_files+=("$1");;
     esac
     shift
   done
 
+  # use cwd if no spec_files specified
+  [ ${#spec_files[@]} -ge 1 ] || spec_files=('.')
+
   # test cli arg completeness
-  if [ -z $spec_file ]; then
-    _usage && _error "No spec file given"
-  fi
-  if [ ! -f $spec_file ]; then
-    _error "No such file exists: ${spec_file}"
-  fi
   if [[ $driver == "docker" ]]; then
     if [ -z $target ]; then
       _usage && _error "No target container specified"
@@ -135,9 +113,35 @@ if [[ $(basename ${0//-/}) == "shrift" ]]; then
     _error "Invalid driver specified: ${driver}"
   fi
 
-  # run entrypoint
-  # wrap args in quotes to avoid assignment issues
-  _main "${spec_file}" "${driver}" "${target}" "${verbose}"
+  # global run state
+  total_specs=0
+  failed_specs=0
+  result_summary=""
+  cmd_result=$(mktemp /tmp/$0.XXX)
+  exit_status=0
 
-  exit $?
+  # exec all files
+  for entry in "${spec_files[@]}"; do
+    [ -f $entry ] && _run_file $entry
+    if [ -d $entry ]; then
+      for child in $(find $entry -name "*_spec.sh" -maxdepth 1); do
+        _run_file $child
+      done
+    fi
+  done
+
+  # display results
+  echo -e "\n${result_summary}"
+  echo "${total_specs} tests, ${failed_specs} failed"
+
+  # cleanup
+  rm $cmd_result
+
+  # return exit code
+  exit $exit_status
+}
+
+# test if script is being called or sourced
+if [[ $(basename ${0//-/}) == "shrift" ]]; then
+  _main $@
 fi
