@@ -10,6 +10,7 @@ function _usage() {
   echo
   echo "-h                 Help"
   echo "-d [container]     Target running docker container"
+  echo "-s [hostname]      Target remote host via ssh"
   echo "-v                 Enable verbose output"
   echo
 }
@@ -55,11 +56,12 @@ function _run_file() {
     # form command string
     case $driver in
       docker) cmd="docker exec ${target} ${spec}";;
-      local)  cmd="${spec}";;
+      ssh)    cmd="ssh -nx ${target} ${spec}";;
+      local)  cmd="eval ${spec}";;
     esac
 
     # execute command
-    eval "${cmd}" &> $cmd_result
+    $cmd &> $cmd_result
     cmd_rc=$?
 
     # handle results
@@ -87,6 +89,7 @@ function _main() {
     case $1 in
       -h) _usage; exit 0;;
       -d) shift; driver='docker'; target=$1;;
+      -s) shift; driver='ssh'; target=$1;;
       -v) verbose=1;;
       *)  spec_files+=("$1");;
     esac
