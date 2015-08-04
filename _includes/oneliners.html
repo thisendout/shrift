@@ -4,7 +4,7 @@
             <div class="content">
               <h2 class="title text-center">One-Liners</h2>
               <div class="block">
-                  <p class="intro">Below are a collection of common bash one-liners that can aid you in creating spec files. It should be noted that bash has a very useful builtin called <code>test</code> that exposes a number of useful tests. See the full man page by using <code>man test</code> or <a href="http://www.gnu.org/software/bash/manual/html_node/Bash-Conditional-Expressions.html" target=_blank>visit it online</a>.</p>
+                <p class="intro">Below are a collection of common bash one-liners that can aid you in creating spec files (clicking on a one-liner opens it with <a href="http://explainshell.com" target="_blank">explainshell.com</a>). It should be noted that bash has a very useful builtin called <code>test</code> that exposes a number of useful tests. See the full man page by using <code>man test</code> or <a href="http://www.gnu.org/software/bash/manual/html_node/Bash-Conditional-Expressions.html" target=_blank>visit it online</a>.</p>
               </div><!--//block-->
 {% for entry in site.data.oneliners  %}
 {% assign lines = entry.content | newline_to_br | split: '<br />' %}

@@ -36,15 +36,16 @@ jQuery(document).ready(function($) {
     $(this).find('pre').toggleClass('hidden');
   });
 
-  $('span.explainshell').hover(function() {
-    console.log(this.text);
-    $(this).css('text-decoration', 'underline');
-  }, function() {
-    $(this).css('text-decoration', 'none');
-  });
-  $('span.explainshell').click(function() {
-    console.log(this.innerHTML);
-  });
+  $(document).on({
+    click: function() {
+      console.log(this.textContent);
+      window.open('http://explainshell.com/explain?cmd=' + this.textContent);
+    }, mouseenter: function() {
+      $(this).css('text-decoration', 'underline').css( 'cursor', 'pointer' );;
+    }, mouseleave: function() {
+      $(this).css('text-decoration', 'none');
+    }
+  }, 'span.explainshell');
 
   hljs.initHighlightingOnLoad();
 });
