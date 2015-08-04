@@ -9,8 +9,7 @@ function _usage() {
   echo "usage: $0 [args] specfiles..."
   echo
   echo "-h                 Help"
-  echo "-d [docker|local]  Execution driver (default: local)"
-  echo "-t [target]        Target for execution (host/container)"
+  echo "-d [container]     Target running docker container"
   echo "-v                 Enable verbose output"
   echo
 }
@@ -87,8 +86,7 @@ function _main() {
   while [ ! -z $1 ]; do
     case $1 in
       -h) _usage; exit 0;;
-      -d) shift; driver=$1;;
-      -t) shift; target=$1;;
+      -d) shift; driver='docker'; target=$1;;
       -v) verbose=1;;
       *)  spec_files+=("$1");;
     esac
@@ -109,8 +107,6 @@ function _main() {
     if ! docker ps | grep -q $target; then
       _error "No such container ${target}"
     fi
-  elif [ ! -z "${driver}" ] && [[ $driver != "local" ]]; then
-    _error "Invalid driver specified: ${driver}"
   fi
 
   # global run state
