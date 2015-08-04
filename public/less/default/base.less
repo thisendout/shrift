@@ -1,0 +1,337 @@
+@import "mixins.less";
+@import "theme-default.less";
+
+/* ======= Base ======= */
+
+body {
+    font-family: 'Lato', arial, sans-serif;   
+    color: @text-color;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6  {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: @dark-grey;
+}
+
+a {
+    color: @link-color;
+    .transition (all 0.4s ease-in-out);
+    &:hover {
+        text-decoration: underline;
+        color: darken(@link-color, 10%);
+    }
+}
+
+a, a:active, a:hover, a:focus {
+    outline: 0;
+}
+
+.btn, a.btn {
+    .transition (all 0.4s ease-in-out);
+    font-family: 'Montserrat', arial, sans-serif;
+    padding: 8px 16px;
+    font-weight:bold;
+    .fa {
+        margin-right: 5px;
+    }
+
+    &:focus {
+        color: #fff;
+    }
+}
+
+a.btn-cta-primary, .btn-cta-primary { 
+    background: darken(@color, 30%);
+    border: 1px solid darken(@color, 30%);
+    color: #fff;
+    font-weight:600;
+    text-transform: uppercase;
+    &:hover {
+        background: darken(@color, 35%);
+        border: 1px solid darken(@color, 35%);
+        color: #fff;
+    }
+}
+
+a.btn-cta-secondary,  .btn-cta-secondary { 
+    background: @color-accent;
+    border: 1px solid @color-accent;
+    color: #fff;
+    font-weight:600;
+    text-transform: uppercase;
+    &:hover {
+        background: darken(@color-accent, 5%);
+        border: 1px solid darken(@color-accent, 5%);
+        color: #fff;
+    }
+}
+
+.text-highlight {
+    color: darken(@color, 30%);
+}
+
+.offset-header {
+    padding-top: 90px;
+}
+
+pre {
+    padding: 5px;
+    background-color: #DDDDDD;
+    border: none;
+}
+
+pre code {
+    border: none;
+    font-size: 16px;
+}
+
+.code-example {
+    padding: 0 10px;
+}
+
+.content {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.section {
+    padding: 80px 0;
+    background: @color;
+    color: @dark-grey;
+    a {
+        color: @link-color;
+        &:hover {
+            color: darken(@link-color, 10%);
+        }
+    }
+    .title {
+        color: @dark-grey; //darken(@color, 30%);
+        margin-top: 0;
+        margin-bottom: 60px;
+    }
+    .intro {
+        max-width: 800px;
+        margin: 0 auto;
+        margin-bottom: 60px;
+        font-size: 20px;
+    }
+    .item {
+        position: relative;
+        margin-bottom: 30px;
+        .icon-holder {
+            position: absolute;
+            left: 30px;
+            top: 0;
+            .fa {
+                font-size: 24px;
+                color: darken(@color, 30%);
+            }
+        }
+        .content, .feature-content {
+            padding-left: 60px;
+            .sub-title {
+                margin-top: 0;
+                color: @dark-grey;
+                font-size: 18px;
+            }
+        }
+    }
+}
+
+.section-stripe {
+    padding: 80px 0;
+    background: @smoky-white;
+    border-top: 2px solid darken(@smoky-white, 10%);
+    border-bottom: 2px solid darken(@smoky-white, 10%);
+    .title {
+        color: @dark-grey;
+        margin-top: 0;
+        margin-bottom: 60px;
+    }
+    .intro {
+        max-width: 800px;
+        margin: 0 auto;
+        margin-bottom: 60px;
+        font-size: 20px;
+    }
+    .item {
+        position: relative;
+        margin-bottom: 30px;
+        .icon-holder {
+            position: absolute;
+            left: 30px;
+            top: 0;
+            .fa {
+                font-size: 24px;
+                color: @dark-grey;
+            }
+        }
+        .content, .feature-content {
+            padding-left: 60px;
+            .sub-title {
+                margin-top: 0;
+                color: @dark-grey;
+                font-size: 18px;
+            }
+        }
+    }
+}
+ 
+/* ======= Header ======= */
+header {
+    padding: 10px 0;
+    background: @color;
+    color: #fff;
+    position: fixed;
+    width: 100%;
+    
+    &.navbar-fixed-top {
+        background: #fff;
+        z-index: 9999;
+        .box-shadow (0 0 4px rgba(0,0,0,0.4));
+        .logo {
+            a {
+                color: @color-accent;
+            }
+        }
+        .main-nav .nav .nav-item a {
+            color: @text-secondary;
+        }
+    }
+    
+    .logo {
+        margin: 0;
+        font-size: 26px;
+        padding-top: 10px;
+        a {
+            color:#fff;
+        }
+    }
+    .main-nav {      
+        button {
+            background: darken(@color, 30%);
+            color: #fff !important;
+            .border-radius(4px);
+            &:focus {
+                outline: none;
+            }
+            .icon-bar {
+                background-color: #fff;
+            }
+        }
+        .navbar-collapse {
+            padding: 0;
+        }
+        .nav {
+            .nav-item {
+                font-weight: normal;
+                margin-right: 30px;
+                font-family: 'Montserrat', sans-serif;
+                &.active {
+                    a {
+                        color: @dark-grey;
+                        background: none;
+                    }
+                }
+                a {
+                    color: darken(@color, 30%);
+                    .transition (none);
+                    font-size: 14px;
+                    padding: 15px 10px;
+                    &:hover {  
+                        color: darken(@color, 50%);    
+                        background: none;             
+                    }
+                    &:focus {
+                        outline: none;
+                        background: none;
+                    }
+                    &:active {
+                        outline: none;
+                        background: none;
+                    }
+                }    
+                &.active {
+                    color: @grey;             
+                }
+                &.last {
+                    margin-right: 0;
+                }
+            }
+            
+        }
+        
+    }
+    
+}
+
+/* ======= Hero Section ======= */
+#hero {
+    background: @color;
+    color: #fff;
+    padding-top: 150px;
+    .title {
+        font-size: 98px;
+        color: darken(@color, 50%);
+        margin-top: 0;
+        .highlight {
+            color: @color-accent;
+        }
+    }
+    
+    .intro {
+        color: @grey;
+        font-size: 28px;
+        max-width: 680px;
+        margin: 0 auto;
+        margin-bottom: 30px;
+    }
+    
+    .btns {
+        .btn {
+            color: #fff;
+            margin-right: 15px;
+            font-size: 18px;
+            padding: 8px 30px;
+        }
+    }
+    
+    .meta {
+        margin-top: 120px;
+        margin-bottom: 30px;
+        color: darken(@color, 20%);
+        li {
+            margin-right: 15px;
+            
+        }
+        a {
+            color: darken(@color,20%);
+            &:hover {
+                color: darken(@color, 30%);
+            }
+        }
+    }
+}
+
+/* ======= Footer ======= */
+
+footer {
+    padding: 30px 0;   
+    background-color: @dark-grey;
+    color: #fff;
+    .copyright {
+        .opacity(0.8);
+    }
+    a {
+        color: @color;
+        text-decoration: underline;
+        &:hover {
+          color: darken(@color, 20%);
+        }
+    }
+}
+

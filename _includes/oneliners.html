@@ -1,0 +1,27 @@
+    <!-- ******DOCS****** --> 
+    <section id="oneliners" class="oneliners section">
+        <div class="container">
+            <div class="content">
+              <h2 class="title text-center">One-Liners</h2>
+              <div class="block">
+                  <p class="intro">Below are a collection of common bash one-liners that can aid you in creating spec files. It should be noted that bash has a very useful builtin called <code>test</code> that exposes a number of useful tests. See the full man page by using <code>man test</code> or <a href="http://www.gnu.org/software/bash/manual/html_node/Bash-Conditional-Expressions.html" target=_blank>visit it online</a>.</p>
+              </div><!--//block-->
+{% for entry in site.data.oneliners  %}
+{% assign lines = entry.content | newline_to_br | split: '<br />' %}
+              <div class="block">
+                  <h3 class="sub-title">{{ entry.title }}</h3>
+                  <div class="code-block">
+                      <pre><code class="bash">{% for line in lines %}<span class="explainshell">{{ line }}</span>{% endfor %}</a></code></pre>
+{% if entry.example %}
+{% assign lines = entry.example | newline_to_br | split: '<br />' %}
+                      <div class="code-example">
+                        <a href="#"><i class="fa fa-caret-right"></i> Example</a>
+                        <pre class="hidden"><code class="bash">{% for line in lines %}{% if line contains '#' %}{{ line }}{% else %}<span class="explainshell">{{ line }}</span>{% endif %}{% endfor %}</code></pre>
+                      </div>
+{% endif %}
+                  </div><!--//code-block-->
+              </div><!--//block-->
+{% endfor %}
+            </div><!--//content-inner-->         
+        </div><!--//container-->
+    </section><!--//oneliners->

@@ -1,0 +1,53 @@
+- title: File exists
+  content: test -e file
+  example: test -e /etc/passwd
+
+- title: Directory exists
+  content: test -d directory
+  example: test -d /etc
+
+- title: File is symbolic link
+  content: test -L file
+  example: test -L /usr/local/bin/shrift
+
+- title: File is readable
+  content: test -r file
+  example: test -r /tmp/pipefile
+
+- title: File is writeable
+  content: test -w file
+  example: test -w /tmp/pipefile
+
+- title: File is executable
+  content: test -x file
+  example: test -x /tmp/pipefile
+
+- title: File is owned by effective user ID
+  content: test -O file
+  example: test -O /etc/passwd
+
+- title: File is owned by effect group ID
+  content: test -G file
+  example: test -G /etc/passwd
+
+- title: File size is greater than zero
+  content: test -s file
+  example: test -s /etc/passwd
+
+- title: File is a socket
+  content: test -S file
+  example: test -S /var/run/mysql.sock
+
+- title: File contains string
+  content: grep -q string file
+  example: grep -q root /etc/passwd
+
+- title: File contains regex pattern
+  content: |
+    grep -E 'pattern' file
+    egrep -q 'pattern' file
+  example: egrep -q '^root:\*' /etc/passwd
+
+- title: File is specific mode
+  content: test $(stat -c "%a" file) == mode
+  example: test $(stat -c "%a" /etc/passwd) == "644"

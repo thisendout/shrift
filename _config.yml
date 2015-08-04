@@ -1,0 +1,11 @@
+# Site settings
+title: shrift
+email: contact@thisendout.com
+description: A minimal spec framework for running tests against your infrastructure.
+baseurl: ""
+url: "http://shrift.io"
+twitter_username: thisendout
+github_username:  thisendout
+
+# Build settings
+markdown: kramdown
