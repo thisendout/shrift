@@ -1,53 +1,66 @@
 - title: File exists
+  description: Returns true if the <code>file</code> exists, regardless of type
   content: test -e file
   example: test -e /etc/passwd
 
 - title: Directory exists
-  content: test -d directory
+  description: Returns true if the <code>file</code> is a directory
+  content: test -d file
   example: test -d /etc
 
 - title: File is symbolic link
+  description: Returns true if the <code>file</code> is a symlink
   content: test -L file
   example: test -L /usr/local/bin/shrift
 
 - title: File is readable
+  description: Returns true if the <code>file</code> is readable by the current user
   content: test -r file
-  example: test -r /tmp/pipefile
+  example: test -r /etc/passwd
 
 - title: File is writeable
+  description: Returns true if the <code>file</code> is writable by the current user
   content: test -w file
-  example: test -w /tmp/pipefile
+  example: test -w /etc/passwd
 
 - title: File is executable
+  description: Returns true if the <code>file</code> is executable by the current user
   content: test -x file
-  example: test -x /tmp/pipefile
+  example: test -x /usr/local/bin/shrift
 
 - title: File is owned by effective user ID
+  description: Returns true if the <code>file</code> is owned by the effective user ID
   content: test -O file
   example: test -O /etc/passwd
 
 - title: File is owned by effect group ID
+  description: Returns true if the <code>file</code> is owned by the effective group ID
   content: test -G file
   example: test -G /etc/passwd
 
 - title: File size is greater than zero
+  description: Returns true if the <code>file</code> size is greater than zero
   content: test -s file
   example: test -s /etc/passwd
 
 - title: File is a socket
+  description: Returns true if the <code>file</code> is a socket
   content: test -S file
   example: test -S /var/run/mysql.sock
 
 - title: File contains string
+  description: Returns true if the <code>string</code> is found in the <code>file</code>
   content: grep -q string file
   example: grep -q root /etc/passwd
 
 - title: File contains regex pattern
+  description: Returns true if the regex <code>pattern</code> is found in the <code>file</code>
   content: |
     grep -E 'pattern' file
     egrep -q 'pattern' file
   example: egrep -q '^root:\*' /etc/passwd
 
 - title: File is specific mode
+  description: Returns true if the <code>file</code> set to mode <code>mode</code>
   content: test $(stat -c "%a" file) == mode
   example: test $(stat -c "%a" /etc/passwd) == "644"

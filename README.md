@@ -15,6 +15,7 @@ to generally consume.
 1. Should be simple/easy to understand (think junior admin)
 2. Should pass on a most modern (maybe ~5 years) *nix operating systems
 3. Should only include one line (exceptions for variations)
+4. Should include a human readable description of the test
 4. Should include a working example
 
 ## Developing
