@@ -28,21 +28,21 @@ assert "_print_dot 1" "${RED}F${END}"
 assert "_print_dot 255" "${RED}F${END}"
 
 # test _main output
-assert "_main test/fixtures/pass_spec.sh" "\n${GREEN}.${END}\n1 tests, 0 failed"
+assert "_main test/fixtures/pass_spec.sh" "\n${GREEN}.${END}${GREEN}.${END}\n2 tests, 0 failed"
 assert "_main test/fixtures/fail_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}\n1 tests, 1 failed"
-assert "_main -v test/fixtures/pass_spec.sh" "# test/fixtures/pass_spec.sh\n${GREEN}Success 0${END}: test -f ./shrift\n\n${GREEN}.${END}\n1 tests, 0 failed"
-assert "_main test/fixtures" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}${GREEN}.${END}\n2 tests, 1 failed"
-assert "_main test/**/*_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}${GREEN}.${END}\n2 tests, 1 failed"
-assert "_main test/fixtures/*_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}${GREEN}.${END}\n2 tests, 1 failed"
+assert "_main -v test/fixtures/pass_spec.sh" "# test/fixtures/pass_spec.sh\n${GREEN}Success 0${END}: test -f ./shrift\n${GREEN}Success 0${END}: test -f ./shrift_test.sh\n\n${GREEN}.${END}${GREEN}.${END}\n2 tests, 0 failed"
+assert "_main test/fixtures" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}${GREEN}.${END}${GREEN}.${END}\n3 tests, 1 failed"
+assert "_main test/**/*_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}${GREEN}.${END}${GREEN}.${END}\n3 tests, 1 failed"
+assert "_main test/fixtures/*_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}${GREEN}.${END}${GREEN}.${END}\n3 tests, 1 failed"
 
 # test runtime usage
 assert_raises "./shrift -h" 0
 assert_raises "./shrift -h | grep -q 'usage: '" 0
 
 # test runtime output
-assert "./shrift test/fixtures/pass_spec.sh" "\n${GREEN}.${END}\n1 tests, 0 failed\n"
+assert "./shrift test/fixtures/pass_spec.sh" "\n${GREEN}.${END}${GREEN}.${END}\n2 tests, 0 failed\n"
 assert "./shrift test/fixtures/fail_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}\n1 tests, 1 failed\n"
-assert "./shrift -v test/fixtures/pass_spec.sh" "# test/fixtures/pass_spec.sh\n${GREEN}Success 0${END}: test -f ./shrift\n\n${GREEN}.${END}\n1 tests, 0 failed\n"
+assert "./shrift -v test/fixtures/pass_spec.sh" "# test/fixtures/pass_spec.sh\n${GREEN}Success 0${END}: test -f ./shrift\n${GREEN}Success 0${END}: test -f ./shrift_test.sh\n\n${GREEN}.${END}${GREEN}.${END}\n2 tests, 0 failed\n"
 
 # test runtime return code
 assert_raises "./shrift test/fixtures/pass_spec.sh" 0
