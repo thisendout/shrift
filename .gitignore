@@ -1,1 +1,3 @@
 *.swp
+test/tmp
+examples_spec.sh
