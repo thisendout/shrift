@@ -8,11 +8,6 @@
   content: test -d file
   example: test -d /etc
 
-- title: File is symbolic link
-  description: Returns true if the <code>file</code> is a symlink
-  content: test -L file
-  example: test -L /usr/local/bin/shrift
-
 - title: File is readable
   description: Returns true if the <code>file</code> is readable by the current user
   content: test -r file
@@ -26,27 +21,7 @@
 - title: File is executable
   description: Returns true if the <code>file</code> is executable by the current user
   content: test -x file
-  example: test -x /usr/local/bin/shrift
-
-- title: File is owned by effective user ID
-  description: Returns true if the <code>file</code> is owned by the effective user ID
-  content: test -O file
-  example: test -O /etc/passwd
-
-- title: File is owned by effect group ID
-  description: Returns true if the <code>file</code> is owned by the effective group ID
-  content: test -G file
-  example: test -G /etc/passwd
-
-- title: File size is greater than zero
-  description: Returns true if the <code>file</code> size is greater than zero
-  content: test -s file
-  example: test -s /etc/passwd
-
-- title: File is a socket
-  description: Returns true if the <code>file</code> is a socket
-  content: test -S file
-  example: test -S /var/run/mysql.sock
+  example: test -x /bin/bash
 
 - title: File contains string
   description: Returns true if the <code>string</code> is found in the <code>file</code>
@@ -58,7 +33,7 @@
   content: |
     grep -E 'pattern' file
     egrep -q 'pattern' file
-  example: egrep -q '^root:\*' /etc/passwd
+  example: egrep -q '^root:' /etc/passwd
 
 - title: File is specific mode
   description: Returns true if the <code>file</code> set to mode <code>mode</code>
