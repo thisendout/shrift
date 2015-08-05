@@ -30,12 +30,10 @@
 
 - title: File contains regex pattern
   description: Returns true if the regex <code>pattern</code> is found in the <code>file</code>
-  content: |
-    grep -E 'pattern' file
-    egrep -q 'pattern' file
-  example: egrep -q '^root:' /etc/passwd
+  content: grep -E 'pattern' file
+  example: grep -E '^root:' /etc/passwd
 
 - title: File is specific mode
   description: Returns true if the <code>file</code> set to mode <code>mode</code>
-  content: test $(stat -c "%a" file) == mode
-  example: test $(stat -c "%a" /etc/passwd) == "644"
+  content: stat -c "%a" file | grep -q mode
+  example: stat -c "%a" /etc/passwd | grep -q 644
