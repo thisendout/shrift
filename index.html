@@ -3,4 +3,127 @@ layout: default
 title: Home
 ---
 
-I am content
+<!-- ******ABOUT****** -->
+<section id="about" class="section">
+  <div class="container">
+    <h2 class="title text-center">What is shrift?</h2>
+    <p class="intro text-center"><code>shrift</code> is a minimal spec framework for testing your infrastructure using <code>bash</code>.<br />shrift installs as a single script and executes bash one-liners as a test suite.<br />No complex setup.  No DSL.</p>
+    <div class="row">
+      <div class="col-md-4 col-md-offset-1">
+        <div class="code-block">
+          <pre><code class="bash"># example_spec.sh
+test -f /etc/passwd
+whoami | grep root
+/usr/local/bin/my_test_script</code></pre>
+        </div><!--//code-block-->
+      </div><!--//col-md-5-->
+      <div class="col-md-2">
+        <p class="intro-arrow text-center"><i class="fa fa-long-arrow-right"></i></p>
+      </div>
+      <div class="col-md-4">
+        <div class="code-block">
+          <pre><code class="bash">$ ./shrift
+
+...
+3 tests, 0 failed
+</code></pre>
+        </div><!--//code-block-->
+      </div><!--//col-md-5-->
+    </div><!--//row-->
+  </div>
+</section>
+
+<!-- ******QUICKSTART****** -->
+<section id="quickstart" class="section-stripe quickstart">
+    <div class="container">
+        <div class="content">
+        <h2 class="title text-center">Quickstart</h2>
+        <div class="block">
+            <p class="text-center">Download <code>shrift</code>.</p>
+            <div class="code-block">
+                <pre><code class="language-bash"># download the script
+$ curl -L -o shrift https://github.com/thisendout/shrift/raw/master/shrift
+# make executable
+$ chmod +x shrift</code></pre>
+            </div>
+        </div>
+        <div class="block">
+            <p class="text-center">Write and run your first spec.</p>
+            <div class="code-block">
+                <pre><code class="language-bash"># write a passing test
+$ echo "test -x ./shrift" > test_spec.sh
+# execute with shrift
+$ ./shrift test_spec.sh</code></pre>
+            </div>
+        </div>
+    </div><!--//container-->
+</section><!--//docs-->
+
+<!-- ******DOCS****** -->
+<section id="docs" class="section">
+    <div class="container">
+        <div class="content">
+          <h2 class="title text-center">Documentation</h2>
+          <p class="intro text-center">For more resources on using and running shrift, please consult the project <a href="https://github.com/thisendout/shrift" target="_blank">GitHub page</a>.</p>
+          <div class="block">
+              <h3 class="sub-title">Spec Files</h3>
+              <p>By default, <code>shrift</code> searches for files matching <code>*_spec.sh</code> in the current directory.  You can pass a space-separated list of paths to shrift to expand the suite.</p>
+              <div class="code-block">
+              <pre><code class="bash">$ ./shrift specs                      # _spec.sh files in a sub-directory
+$ ./shrift specs/{common,web}         # _spec.sh split up by role, one per directory
+$ ./shrift specs/{common,web}_spec.sh # _spec.sh split up by role, one per file
+$ ./shrift specs/**/*.sh              # globbing and wilcards are supported</code></pre>
+              </div><!--//code-block-->
+          </div><!--//block-->
+          <div class="block">
+              <h3 class="sub-title">Specs</h3>
+              <p>Spec files must contain one test per line.  A test is considered passing when the return code is <code>0</code>. Any other condition is considered a failure.</p>
+              <div class="code-block">
+              <pre><code class="bash"># example spec file
+test -f /etc/passwd
+whoami | grep root
+/usr/local/bin/my_test_script
+netstat -lntp | grep 80</code></pre>
+              </div><!--//code-block-->
+          </div><!--//block-->
+          <div class="block">
+              <h3 class="sub-title">Targets</h3>
+              <p>By default, `shrift` executes the specs locally.  shrift can also execute using docker exec and ssh, if the clients are already installed.</p>
+              <div class="code-block">
+              <pre><code class="bash">$ ./shrift -d [container_id]  # Run specs against a *running* container
+$ ./shrift -s [hostname]  # Run specs against a remote host via SSH</code></pre>
+              </div><!--//code-block-->
+              <p>For docker and ssh backends, custom client-specific options can be passed using <code>-o 'opts...'</code>.</p>
+              <p>For the ssh backends, each spec is executed using a separate ssh command. We recommend setting up ControlMaster and ControlPersist to re-use ssh sessions.</p>
+          </div><!--//block-->
+        </div><!--//docs-inner-->
+    </div><!--//container-->
+</section><!--//docs-->
+
+<!-- ******oneliners****** -->
+<section id="oneliners" class="oneliners section-stripe">
+    <div class="container">
+        <div class="content">
+          <h2 class="title text-center">One-Liners</h2>
+          <div class="block">
+            <p class="intro">Below are a collection of common bash one-liners that can aid you in creating spec files (clicking on a one-liner opens it with <a href="http://explainshell.com" target="_blank">explainshell.com</a>). It should be noted that bash has a very useful builtin called <code>test</code> that exposes a number of useful tests. See the full man page by using <code>man test</code> or <a href="http://www.gnu.org/software/bash/manual/html_node/Bash-Conditional-Expressions.html" target=_blank>visit it online</a>.</p>
+          </div><!--//block-->
+          {% for entry in site.data.oneliners  %}
+          {% assign lines = entry.content | newline_to_br | split: '<br />' %}
+          <div class="row one-liner">
+              <div class="block">
+                  <div class="col-md-6">
+                      <h3 class="sub-title">{{ entry.title }}</h3>
+                      <p><i>{% if entry.description %}{{ entry.description }}{% else %}No description given...{% endif %}</i></p>
+                  </div><!--//col-md-6-->
+                  <div class="col-md-6">
+                      <div class="code-block">
+                          <pre><code class="bash">{% for line in lines %}{% if line contains '#' %}{{ line }}{% else %}<span class="explainshell">{{ line }}</span>{% endif %}{% endfor %}</a></code></pre>
+                      </div><!--//code-block-->
+                  </div><!--//col-md-6-->
+              </div><!--//block-->
+          </div><!--//row-->
+          {% endfor %}
+        </div><!--//content-inner-->
+    </div><!--//container-->
+</section><!--//oneliners->

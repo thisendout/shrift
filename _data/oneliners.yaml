@@ -1,12 +1,10 @@
 - title: File exists
-  description: Returns true if the <code>file</code> exists, regardless of type
-  content: test -e file
-  example: test -e /etc/passwd
+  description: Returns true if <code>/etc/passwd</code> exists, regardless of type
+  content: test -e /etc/passwd
 
 - title: Directory exists
-  description: Returns true if the <code>file</code> is a directory
-  content: test -d file
-  example: test -d /etc
+  description: Returns true if <code>/etc</code> is a directory
+  content: test -d /etc
 
 - title: File is readable
   description: Returns true if the <code>file</code> is readable by the current user
@@ -24,9 +22,8 @@
   example: test -x /bin/bash
 
 - title: File contains string
-  description: Returns true if the <code>string</code> is found in the <code>file</code>
-  content: grep -q string file
-  example: grep -q root /etc/passwd
+  description: Returns true if the string <code>root</code> is found in <code>/etc/passwd</code>
+  content: grep -q root /etc/passwd
 
 - title: File contains regex pattern
   description: Returns true if the regex <code>pattern</code> is found in the <code>file</code>

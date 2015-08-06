@@ -30,12 +30,6 @@ jQuery(document).ready(function($) {
 		
 	});
 
-  $('.code-example').click(function(e) {
-    e.preventDefault();
-    $(this).find('i').toggleClass('fa-caret-right fa-caret-down');
-    $(this).find('pre').toggleClass('hidden');
-  });
-
   $(document).on({
     click: function() {
       console.log(this.textContent);

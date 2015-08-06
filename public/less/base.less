@@ -20,7 +20,7 @@ h1, h2, h3, h4, h5, h6  {
 a {
     color: @link-color;
     .transition (all 0.4s ease-in-out);
-    &:hover {
+    &:hover, &:focus {
         text-decoration: underline;
         color: darken(@link-color, 10%);
     }
@@ -28,46 +28,6 @@ a {
 
 a, a:active, a:hover, a:focus {
     outline: 0;
-}
-
-.btn, a.btn {
-    .transition (all 0.4s ease-in-out);
-    font-family: 'Montserrat', arial, sans-serif;
-    padding: 8px 16px;
-    font-weight:bold;
-    .fa {
-        margin-right: 5px;
-    }
-
-    &:focus {
-        color: #fff;
-    }
-}
-
-a.btn-cta-primary, .btn-cta-primary { 
-    background: darken(@color, 30%);
-    border: 1px solid darken(@color, 30%);
-    color: #fff;
-    font-weight:600;
-    text-transform: uppercase;
-    &:hover {
-        background: darken(@color, 35%);
-        border: 1px solid darken(@color, 35%);
-        color: #fff;
-    }
-}
-
-a.btn-cta-secondary,  .btn-cta-secondary { 
-    background: @color-accent;
-    border: 1px solid @color-accent;
-    color: #fff;
-    font-weight:600;
-    text-transform: uppercase;
-    &:hover {
-        background: darken(@color-accent, 5%);
-        border: 1px solid darken(@color-accent, 5%);
-        color: #fff;
-    }
 }
 
 .text-highlight {
@@ -106,20 +66,27 @@ pre code {
     margin: 10px 0;
     border-bottom: 1px solid #DBDBDB;
     .sub-title {
-      margin-top: 0;
+        margin-top: 0;
     }
+    .code-block {
+        padding-top: 5px;
+    }
+}
+
+.intro-arrow {
+    font-size: 48px;
+    padding-top: 20px;
+}
+
+#quickstart p.text-center {
+    padding: 15px 0;
+    font-size: 20px;
 }
 
 .section {
     padding: 80px 0;
     background: @color;
     color: @dark-grey;
-    a {
-        color: @link-color;
-        &:hover {
-            color: darken(@link-color, 10%);
-        }
-    }
     .title {
         color: @dark-grey; //darken(@color, 30%);
         margin-top: 0;
@@ -210,9 +177,6 @@ header {
                 color: @color-accent;
             }
         }
-        .main-nav .nav .nav-item a {
-            color: @text-secondary;
-        }
     }
     
     .logo {
@@ -220,21 +184,10 @@ header {
         font-size: 26px;
         padding-top: 10px;
         a {
-            color:#fff;
+            color: @color-accent;
         }
     }
     .main-nav {      
-        button {
-            background: darken(@color, 30%);
-            color: #fff !important;
-            .border-radius(4px);
-            &:focus {
-                outline: none;
-            }
-            .icon-bar {
-                background-color: #fff;
-            }
-        }
         .navbar-collapse {
             padding: 0;
         }
@@ -250,6 +203,12 @@ header {
                     }
                 }
                 a {
+                    &.accent {
+                        color: @color-accent;
+                        &:hover, &:focus {
+                          color: darken(@color-accent, 10%);
+                        }
+                    }
                     color: darken(@color, 30%);
                     .transition (none);
                     font-size: 14px;
@@ -268,63 +227,25 @@ header {
                     }
                 }    
                 &.active {
-                    color: @grey;             
+                    color: @grey;         
                 }
                 &.last {
                     margin-right: 0;
                 }
             }
-            
         }
-        
     }
-    
 }
 
-/* ======= Hero Section ======= */
-#hero {
-    background: @color;
-    color: #fff;
+/* ======= About Section ======= */
+#about {
     padding-top: 150px;
     .title {
-        font-size: 98px;
+        font-size: 48px;
         color: darken(@color, 50%);
         margin-top: 0;
         .highlight {
             color: @color-accent;
-        }
-    }
-    
-    .intro {
-        color: @grey;
-        font-size: 28px;
-        max-width: 680px;
-        margin: 0 auto;
-        margin-bottom: 30px;
-    }
-    
-    .btns {
-        .btn {
-            color: #fff;
-            margin-right: 15px;
-            font-size: 18px;
-            padding: 8px 30px;
-        }
-    }
-    
-    .meta {
-        margin-top: 120px;
-        margin-bottom: 30px;
-        color: darken(@color, 20%);
-        li {
-            margin-right: 15px;
-            
-        }
-        a {
-            color: darken(@color,20%);
-            &:hover {
-                color: darken(@color, 30%);
-            }
         }
     }
 }
