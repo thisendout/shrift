@@ -6,31 +6,22 @@
   description: Returns true if <code>/etc</code> is a directory
   content: test -d /etc
 
-- title: File is readable
-  description: Returns true if the <code>file</code> is readable by the current user
-  content: test -r file
-  example: test -r /etc/passwd
-
-- title: File is writeable
-  description: Returns true if the <code>file</code> is writable by the current user
-  content: test -w file
-  example: test -w /etc/passwd
+- title: File is symlink
+  description: Returns true if <code>/bin/shrift</code> is a symbolic link
+  content: test -L /bin/shrift
 
 - title: File is executable
-  description: Returns true if the <code>file</code> is executable by the current user
-  content: test -x file
-  example: test -x /bin/bash
+  description: Returns true if <code>/bin/bash</code> is executable by the current user
+  content: test -x /bin/bash
 
 - title: File contains string
   description: Returns true if the string <code>root</code> is found in <code>/etc/passwd</code>
   content: grep -q root /etc/passwd
 
 - title: File contains regex pattern
-  description: Returns true if the regex <code>pattern</code> is found in the <code>file</code>
-  content: grep -E 'pattern' file
-  example: grep -E '^root:' /etc/passwd
+  description: Returns true if the regex pattern <code>^root:</code> is found in <code>/etc/passwd</code>
+  content: grep -E -q '^root:' /etc/passwd
 
 - title: File is specific mode
-  description: Returns true if the <code>file</code> set to mode <code>mode</code>
-  content: stat -c "%a" file | grep -q mode
-  example: stat -c "%a" /etc/passwd | grep -q 644
+  description: Returns true if <code>/etc/passwd</code> set to mode <code>644</code>
+  content: test $(stat -c "%a" /etc/passwd) == "644"
