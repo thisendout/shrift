@@ -11,6 +11,7 @@ function _usage() {
   echo "-h                 Help"
   echo "-d [container]     Target running docker container"
   echo "-s [hostname]      Target remote host via ssh"
+  echo "-o '[opts]'        Raw CLI options to pass to SSH/Docker (must be in quotes)"
   echo "-v                 Enable verbose output"
   echo
 }
@@ -18,6 +19,10 @@ function _usage() {
 function _error() {
   echo -e "${RED}ERROR${END}: ${1}"
   exit 1
+}
+
+function _mktemp() {
+  mktemp /tmp/$(basename ${0//-/}).XXX
 }
 
 function _print_cmd_summary() {
@@ -45,6 +50,7 @@ function _print_dot() {
 }
 
 function _run_file() {
+  local file=$1
   [ $verbose -eq 1 ] && echo "# ${1}"
   # loop through specs
   while read spec; do
@@ -55,8 +61,8 @@ function _run_file() {
 
     # form command string
     case $driver in
-      docker) cmd="docker exec ${target} ${spec}";;
-      ssh)    cmd="ssh -nx ${target} ${spec}";;
+      docker) cmd="docker ${opts} exec ${target} ${spec}";;
+      ssh)    cmd="ssh ${opts} -nx ${target} ${spec}";;
       local)  cmd="eval ${spec}";;
     esac
 
@@ -76,22 +82,24 @@ function _run_file() {
       _print_cmd_output $cmd_result
     fi
     result_summary+=$(_print_dot $cmd_rc)
-  done < $1
+  done < $file
 }
 
 function _main() {
   driver='local'
+  opts=''
   verbose=0
   spec_files=()
 
   # parse cli args
   while [ ! -z $1 ]; do
     case $1 in
-      -h) _usage; exit 0;;
-      -d) shift; driver='docker'; target=$1;;
-      -s) shift; driver='ssh'; target=$1;;
-      -v) verbose=1;;
-      *)  spec_files+=("$1");;
+      -h|--help) _usage; exit 0;;
+      -d)        shift; driver='docker'; target=$1;;
+      -s)        shift; driver='ssh'; target=$1;;
+      -o)        shift; opts="${1}";;
+      -v)        verbose=1;;
+      *)         spec_files+=("$1");;
     esac
     shift
   done
@@ -107,7 +115,7 @@ function _main() {
     if ! docker info &> /dev/null; then
       _error "Cannot connect to docker daemon"
     fi
-    if ! docker ps | grep -q $target; then
+    if ! docker inspect $target &> /dev/null; then
       _error "No such container ${target}"
     fi
   fi
@@ -116,7 +124,7 @@ function _main() {
   total_specs=0
   failed_specs=0
   result_summary=""
-  cmd_result=$(mktemp /tmp/$0.XXX)
+  cmd_result=$(_mktemp)
   exit_status=0
 
   # exec all files
@@ -142,5 +150,5 @@ function _main() {
 
 # test if script is being called or sourced
 if [[ $(basename ${0//-/}) == "shrift" ]]; then
-  _main $@
+  _main "$@"
 fi

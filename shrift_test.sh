@@ -9,13 +9,18 @@ assert "_usage | head -n1 | cut -d ' ' -f1" "usage:"
 # test _error
 assert "_error test" "${RED}ERROR${END}: test"
 
+# test _mktemp
+t=$(_mktemp)
+assert_raises "test -f ${t}" 0
+rm $t
+
 # test _print_cmd_summary
 assert "_print_cmd_summary 0 'good'" "${GREEN}Success 0${END}: good"
 assert "_print_cmd_summary 1 'bad'" "${RED}Failure 1${END}: bad"
 assert "_print_cmd_summary 255 'also bad'" "${RED}Failure 255${END}: also bad"
 
 # test _print_cmd_output
-t=$(mktemp test/tmp.XXX)
+t=$(_mktemp)
 echo -e "command not found: banana" > $t
 assert "_print_cmd_output $t" "  command not found: banana\n"
 echo -e "command not found: barnana" >> $t
