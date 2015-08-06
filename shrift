@@ -58,16 +58,17 @@ function _run_file() {
     if echo $spec | grep -q '^#'; then
       continue
     fi
+    safespec=${spec//\'/\'\\\'\'}
 
     # form command string
     case $driver in
-      docker) cmd="docker ${opts} exec ${target} ${spec}";;
-      ssh)    cmd="ssh ${opts} -nx ${target} ${spec}";;
-      local)  cmd="eval ${spec}";;
+      docker) cmd="docker ${opts} exec -t ${target} /bin/sh -c '${safespec}'";;
+      ssh)    cmd="ssh ${opts} -nx ${target} '${safespec}'";;
+      local)  cmd="${spec}";;
     esac
 
     # execute command
-    $cmd &> $cmd_result
+    eval $cmd &> $cmd_result
     cmd_rc=$?
 
     # handle results
