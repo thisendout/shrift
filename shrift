@@ -9,11 +9,9 @@ function _usage() {
   echo "usage: $0 [args] specfiles..."
   echo
   echo "-h                 Help"
-  echo "-f [vars_file]     Variables file to source before expanding (implies -e)"
   echo "-d [container]     Target running docker container"
   echo "-s [hostname]      Target remote host via ssh"
   echo "-o '[opts]'        Raw CLI options to pass to SSH/Docker (must be in quotes)"
-  echo "-e                 Expand variables in spec before running"
   echo "-v                 Enable verbose output"
   echo
 }
@@ -51,16 +49,9 @@ function _print_dot() {
   fi
 }
 
-function _expand_vars() {
-  local tmp=$(_mktemp)
-  eval "echo \"$(cat $1)\"" > $tmp
-  echo $tmp
-}
-
 function _run_file() {
   local file=$1
   [ $verbose -eq 1 ] && echo "# ${1}"
-  [ $expand_vars -eq 1 ] && file=$(_expand_vars $1)
   # loop through specs
   while read spec; do
     # skip comments
@@ -92,14 +83,11 @@ function _run_file() {
     fi
     result_summary+=$(_print_dot $cmd_rc)
   done < $file
-  [ $expand_vars -eq 1 ] && rm $file
 }
 
 function _main() {
   driver='local'
   opts=''
-  vars_file=''
-  expand_vars=0
   verbose=0
   spec_files=()
 
@@ -107,11 +95,9 @@ function _main() {
   while [ ! -z $1 ]; do
     case $1 in
       -h|--help) _usage; exit 0;;
-      -f)        shift; vars_file=$1; expand_vars=1;;
       -d)        shift; driver='docker'; target=$1;;
       -s)        shift; driver='ssh'; target=$1;;
       -o)        shift; opts="${1}";;
-      -e)        expand_vars=1;;
       -v)        verbose=1;;
       *)         spec_files+=("$1");;
     esac
@@ -131,15 +117,6 @@ function _main() {
     fi
     if ! docker inspect $target &> /dev/null; then
       _error "No such container ${target}"
-    fi
-  fi
-
-  # source variable file
-  if [ ! -z $vars_file ]; then
-    if [ ! -f $vars_file ]; then
-      _error "No such vars_file ${vars_file}"
-    else
-      source ${vars_file}
     fi
   fi
 

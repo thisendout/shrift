@@ -32,12 +32,6 @@ assert "_print_dot 0" "${GREEN}.${END}"
 assert "_print_dot 1" "${RED}F${END}"
 assert "_print_dot 255" "${RED}F${END}"
 
-# test _expand_vars
-t=$(_expand_vars test/fixtures/vars_test)
-assert_raises "test -f ${t}"
-assert "cat ${t}" "echo ${USER}"
-rm $t
-
 # test _main output
 assert "_main test/fixtures/pass_spec.sh" "\n${GREEN}.${END}${GREEN}.${END}\n2 tests, 0 failed"
 assert "_main test/fixtures/fail_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}\n1 tests, 1 failed"
@@ -54,7 +48,6 @@ assert_raises "./shrift -h | grep -q 'usage: '" 0
 assert "./shrift test/fixtures/pass_spec.sh" "\n${GREEN}.${END}${GREEN}.${END}\n2 tests, 0 failed\n"
 assert "./shrift test/fixtures/fail_spec.sh" "${RED}Failure 1${END}: test -f notpresent\n\n${RED}F${END}\n1 tests, 1 failed\n"
 assert "./shrift -v test/fixtures/pass_spec.sh" "# test/fixtures/pass_spec.sh\n${GREEN}Success 0${END}: test -f ./shrift\n${GREEN}Success 0${END}: test -f ./shrift_test.sh\n\n${GREEN}.${END}${GREEN}.${END}\n2 tests, 0 failed\n"
-assert "./shrift -v -f test/fixtures/vars_file test/fixtures/vars_test" "# test/fixtures/vars_test\n${GREEN}Success 0${END}: echo notarealuser\n  notarealuser\n\n${GREEN}.${END}\n1 tests, 0 failed"
 
 # test runtime return code
 assert_raises "./shrift test/fixtures/pass_spec.sh" 0
