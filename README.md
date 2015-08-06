@@ -16,7 +16,6 @@ to generally consume.
 2. Should pass on a most modern (maybe ~5 years) *nix operating systems
 3. Should only include one line (exceptions for variations)
 4. Should include a human readable description of the test
-4. Should include a working example
 
 ## Developing
 
@@ -35,4 +34,4 @@ Browse to [http://localhost:4000](http://localhost:4000) to see the site.
 Compile less files with the following:
 
     npm install -g less
-    lessc public/less/default/styles.less public/css/styles.css
+    lessc public/less/styles.less public/css/styles.css

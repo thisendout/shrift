@@ -1,0 +1,5 @@
+test:
+  override:
+    - npm install -g less
+    - less -c public/less/styles.less styles.css
+    - diff -q styles.css public/css/styles.css
