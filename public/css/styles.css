@@ -1,4 +1,4 @@
-/*
+/*   
  * Template Name: devAid - Responsive Website Template for developers
  * Version: 1.0
  * Author: Xiaoying Riley at 3rd Wave Media
@@ -30,7 +30,8 @@ a {
   -ms-transition: all 0.4s ease-in-out;
   -o-transition: all 0.4s ease-in-out;
 }
-a:hover {
+a:hover,
+a:focus {
   text-decoration: underline;
   color: #a3831f;
 }
@@ -39,52 +40,6 @@ a:active,
 a:hover,
 a:focus {
   outline: 0;
-}
-.btn,
-a.btn {
-  -webkit-transition: all 0.4s ease-in-out;
-  -moz-transition: all 0.4s ease-in-out;
-  -ms-transition: all 0.4s ease-in-out;
-  -o-transition: all 0.4s ease-in-out;
-  font-family: 'Montserrat', arial, sans-serif;
-  padding: 8px 16px;
-  font-weight: bold;
-}
-.btn .fa,
-a.btn .fa {
-  margin-right: 5px;
-}
-.btn:focus,
-a.btn:focus {
-  color: #fff;
-}
-a.btn-cta-primary,
-.btn-cta-primary {
-  background: #b3b3b3;
-  border: 1px solid #b3b3b3;
-  color: #fff;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-a.btn-cta-primary:hover,
-.btn-cta-primary:hover {
-  background: #a6a6a6;
-  border: 1px solid #a6a6a6;
-  color: #fff;
-}
-a.btn-cta-secondary,
-.btn-cta-secondary {
-  background: #e6b92b;
-  border: 1px solid #e6b92b;
-  color: #fff;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-a.btn-cta-secondary:hover,
-.btn-cta-secondary:hover {
-  background: #ddae1a;
-  border: 1px solid #ddae1a;
-  color: #fff;
 }
 .text-highlight {
   color: #b3b3b3;
@@ -119,16 +74,21 @@ pre code {
 .one-liner .sub-title {
   margin-top: 0;
 }
+.one-liner .code-block {
+  padding-top: 5px;
+}
+.intro-arrow {
+  font-size: 48px;
+  padding-top: 20px;
+}
+#quickstart p.text-center {
+  padding: 15px 0;
+  font-size: 20px;
+}
 .section {
   padding: 80px 0;
   background: #ffffff;
   color: #666666;
-}
-.section a {
-  color: #cea627;
-}
-.section a:hover {
-  color: #a3831f;
 }
 .section .title {
   color: #666666;
@@ -222,9 +182,6 @@ header.navbar-fixed-top {
 header.navbar-fixed-top .logo a {
   color: #e6b92b;
 }
-header.navbar-fixed-top .main-nav .nav .nav-item a {
-  color: #666666;
-}
 header .logo {
   margin: 0;
   font-size: 26px;
@@ -232,24 +189,6 @@ header .logo {
 }
 header .logo a {
   color: #e6b92b;
-}
-header .main-nav button {
-  background: #b3b3b3;
-  color: #fff !important;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  -ms-border-radius: 4px;
-  -o-border-radius: 4px;
-  border-radius: 4px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-}
-header .main-nav button:focus {
-  outline: none;
-}
-header .main-nav button .icon-bar {
-  background-color: #fff;
 }
 header .main-nav .navbar-collapse {
   padding: 0;
@@ -272,6 +211,13 @@ header .main-nav .nav .nav-item a {
   font-size: 14px;
   padding: 15px 10px;
 }
+header .main-nav .nav .nav-item a.accent {
+  color: #e6b92b;
+}
+header .main-nav .nav .nav-item a.accent:hover,
+header .main-nav .nav .nav-item a.accent:focus {
+  color: #c79c17;
+}
 header .main-nav .nav .nav-item a:hover {
   color: #808080;
   background: none;
@@ -290,56 +236,18 @@ header .main-nav .nav .nav-item.active {
 header .main-nav .nav .nav-item.last {
   margin-right: 0;
 }
-/* ======= Hero Section ======= */
-#hero {
-  background: #ffffff;
-  color: #fff;
+/* ======= About Section ======= */
+#about {
   padding-top: 150px;
 }
-#hero .title {
-  font-size: 98px;
+#about .title {
+  font-size: 48px;
   color: #808080;
   margin-top: 0;
 }
-#hero .title .highlight {
+#about .title .highlight {
   color: #e6b92b;
 }
-#hero .intro {
-  color: #888888;
-  font-size: 28px;
-  max-width: 680px;
-  margin: 0 auto;
-  margin-bottom: 30px;
-}
-#hero .btns .btn {
-  color: #fff;
-  margin-right: 15px;
-  font-size: 18px;
-  padding: 8px 30px;
-}
-#hero .meta {
-  margin-top: 120px;
-  margin-bottom: 30px;
-  color: #cccccc;
-}
-#hero .meta li {
-  margin-right: 15px;
-}
-#hero .meta a {
-  color: #cccccc;
-}
-#hero .meta a:hover {
-  color: #b3b3b3;
-}
-.intro-arrow {
-  padding-top: 20px;
-}
-
-#quickstart p.text-center {
-  padding: 15px 0;
-  font-size: 20px;
-}
-
 /* ======= Footer ======= */
 footer {
   padding: 30px 0;
