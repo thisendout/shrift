@@ -331,6 +331,15 @@ header .main-nav .nav .nav-item.last {
 #hero .meta a:hover {
   color: #b3b3b3;
 }
+.intro-arrow {
+  padding-top: 20px;
+}
+
+#quickstart p.text-center {
+  padding: 15px 0;
+  font-size: 20px;
+}
+
 /* ======= Footer ======= */
 footer {
   padding: 30px 0;
