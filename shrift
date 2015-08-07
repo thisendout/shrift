@@ -29,15 +29,15 @@ function _print_cmd_summary() {
   local rc=$1
   local cmd=$2
   if [[ $rc == 0 ]]; then
-    echo -e "${GREEN}Success 0${END}: ${cmd}"
+    echo -e "  ${GREEN}0${END}: ${cmd}"
   else
-    echo -e "${RED}Failure ${rc}${END}: ${cmd}"
+    echo -e "  ${RED}${rc}${END}: ${cmd}"
   fi
 }
 
 function _print_cmd_output() {
   while read line; do
-    echo "  ${line}"
+    echo "    ${line}"
   done < $1
 }
 
@@ -51,11 +51,21 @@ function _print_dot() {
 
 function _run_file() {
   local file=$1
-  [ $verbose -eq 1 ] && echo "# ${1}"
+  local block=""
+  local block_printed=0
+  [ $verbose -gt 1 ] && echo && echo "# ${1}"
   # loop through specs
   while read spec; do
-    # skip comments
+    # check for empty line
+    if [[ "$spec" == "" ]]; then
+      block=""
+      block_printed=0
+      continue
+    fi
+    # handle commented blocks
     if echo $spec | grep -q '^#'; then
+      block="$spec"
+      block_printed=0
       continue
     fi
     safespec=${spec//\'/\'\\\'\'}
@@ -76,12 +86,18 @@ function _run_file() {
     if [ $cmd_rc -ne 0 ]; then
       exit_status=1
       let failed_specs+=1
-      _print_cmd_summary $cmd_rc "${spec}"
-      _print_cmd_output $cmd_result
-    elif [[ $verbose == 1 ]]; then
+    fi
+
+    if [[ $cmd_rc -ne 0 || $verbose == 1 ]]; then
+      if [ $block_printed -eq 0 ]; then
+        block_printed=1
+        echo
+        [ ! -z "$block" ] && echo $block
+      fi
       _print_cmd_summary $cmd_rc "${spec}"
       _print_cmd_output $cmd_result
     fi
+
     result_summary+=$(_print_dot $cmd_rc)
   done < $file
 }
