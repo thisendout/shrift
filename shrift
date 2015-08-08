@@ -21,6 +21,10 @@ function _error() {
   exit 1
 }
 
+function _cleanup() {
+  rm $cmd_result
+}
+
 function _mktemp() {
   mktemp /tmp/$(basename ${0//-/}).XXX
 }
@@ -128,6 +132,9 @@ function _main() {
   cmd_result=$(_mktemp)
   exit_status=0
 
+  # cleanup
+  trap _cleanup EXIT
+
   # exec all files
   for entry in "${spec_files[@]}"; do
     [ -f $entry ] && _run_file $entry
@@ -141,9 +148,6 @@ function _main() {
   # display results
   echo -e "\n${result_summary}"
   echo "${total_specs} tests, ${failed_specs} failed"
-
-  # cleanup
-  rm $cmd_result
 
   # return exit code
   exit $exit_status
