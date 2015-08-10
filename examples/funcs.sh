@@ -1,1 +1,1 @@
-function t() { echo $1; }
+function _echo() { echo $1; }
