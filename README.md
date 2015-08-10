@@ -62,6 +62,14 @@ For docker and ssh backends, custom client-specific options can be passed using 
 
 For the ssh backends, each spec is executed using a separate ssh command. We recommend setting up ControlMaster and ControlPersist to re-use ssh sessions.
 
+## Output
+
+By default, `shrift` shows output from failing tests and a summary.  If you want to see the output from all tests, set the verbose flag by passing `-v`.
+
+### Blocks
+
+A `#` comment line will start a new test block.  `shrift` will add subsequent tests to the block until another comment or empty line is encountered.  Blocks are only used in formatting output; they do not modify how the tests are executed.
+
 # License
 
 MIT License
