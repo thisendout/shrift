@@ -17,7 +17,7 @@ function _usage() {
 }
 
 function _error() {
-  echo -e "${RED}ERROR${END}: ${1}"
+  echo -e "${RED}ERROR: ${1}${END}"
   exit 1
 }
 
@@ -29,9 +29,9 @@ function _print_cmd_summary() {
   local rc=$1
   local cmd=$2
   if [[ $rc == 0 ]]; then
-    echo -e "  ${GREEN}0${END}: ${cmd}"
+    echo -e "  (${GREEN}0${END}) ${GREEN}${cmd}${END}"
   else
-    echo -e "  ${RED}${rc}${END}: ${cmd}"
+    echo -e "  (${RED}${rc}${END}) ${RED}${cmd}${END}"
   fi
 }
 
