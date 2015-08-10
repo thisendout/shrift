@@ -1,11 +1,18 @@
 #!/bin/bash
 
-#ANSI COLORS
+CWD=$(pwd)
+
+# ansi colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 END='\033[0m'
 
+function _version() {
+  echo "0.2.0"
+}
+
 function _usage() {
+  echo "Version: $(_version)"
   echo "usage: $0 [args] specfiles..."
   echo
   echo "-h                 Help"
@@ -67,23 +74,35 @@ function _run_file() {
       continue
     fi
     # handle commented blocks
-    if echo $spec | grep -q '^#'; then
+    if [ -z "$(echo ${spec} | cut -d'#' -f1)" ]; then
       block="$spec"
       block_printed=0
+    fi
+
+    # grab the first command of the spec
+    firstcmd=$(echo ${spec} | cut -d' ' -f1)
+
+    # override attempts to source a file from spec and source in execution
+    if [[ $firstcmd == "source" ]] || [[ $firstcmd == "." ]]; then
+      cd $(dirname $file) && source $(echo ${spec} | cut -d' ' -f2) && cd $CWD
       continue
     fi
-    safespec=${spec//\'/\'\\\'\'}
 
-    # form command string
+    # look for inline function calls and export
+    if [[ $firstcmd == "function" ]] || [[ ${firstcmd: -2} == "()" ]]; then
+      eval ${spec}
+      continue
+    fi
+
+    # execute spec command
     case $driver in
-      docker) cmd="docker ${opts} exec -t ${target} /bin/sh -c '${safespec}'";;
-      ssh)    cmd="ssh ${opts} -nx ${target} '${safespec}'";;
-      local)  cmd="${spec}";;
+      docker) docker ${opts} exec -t ${target} /bin/bash -c "$(declare -f -x); ${spec}" &> $cmd_result;
+              cmd_rc=$?;;
+      ssh)    ssh ${opts} -nx ${target} "$(declare -f -x); ${spec}" &> $cmd_result;
+              cmd_rc=$?;;
+      local)  eval ${spec} &> $cmd_result;
+              cmd_rc=$?;;
     esac
-
-    # execute command
-    eval $cmd &> $cmd_result
-    cmd_rc=$?
 
     # handle results
     let total_specs+=1
@@ -150,6 +169,10 @@ function _main() {
 
   # cleanup
   trap _cleanup EXIT
+
+  # export by default
+  set -a
+  export -f _version
 
   # exec all files
   for entry in "${spec_files[@]}"; do

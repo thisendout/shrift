@@ -49,6 +49,40 @@ whoami | grep root
 netstat -lntp | grep 80
 ```
 
+### Functions
+
+Spec files may source a functions file or contain user-defined inline functions (contained on a single line) to encapsulate commonly used commands. For example, if there were a number of spec's checking for individual ports, instead of repeating the command, a one-liner function could be used instead.
+
+```
+# before function
+netstat -lntp | grep 22
+netstat -lntp | grep 80
+netstat -lntp | grep 443
+
+# define function
+port() { netstat -lntp | grep $1; }
+
+# after function
+port 22
+port 80
+port 443
+```
+
+Sourcing a common functions file is also a supported workflow. For example:
+
+```
+# my_functions.sh
+function port() { netstat -lntp | grep $1; }
+process() { ps ax | grep $1; }
+mode() { stat -c "%a" $1 | grep $2; }
+
+# my_spec.sh
+source my_functions.sh
+port 22
+process sshd
+mode /etc/passwd 644
+```
+
 ## Targets
 
 By default, `shrift` executes the specs locally.  shrift can also execute using docker exec and ssh, if the clients are already installed.

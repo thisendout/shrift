@@ -4,7 +4,7 @@ source ./test/lib/assert.sh
 source ./shrift
 
 # test _usage
-assert "_usage | head -n1 | cut -d ' ' -f1" "usage:"
+assert "_usage | head -n2 | tail -n1 | cut -d ' ' -f1" "usage:"
 
 # test _error
 assert "_error test" "${RED}ERROR: test${END}"
@@ -36,9 +36,13 @@ assert "_print_dot 255" "${RED}F${END}"
 assert "_main test/fixtures/pass_spec.sh" "\n${GREEN}.${END}${GREEN}.${END}\n2 tests, 0 failed"
 assert "_main test/fixtures/fail_spec.sh" "\n  (${RED}1${END}) ${RED}test -f notpresent${END}\n\n${RED}F${END}\n1 tests, 1 failed"
 assert "_main -v test/fixtures/pass_spec.sh" "\n  (${GREEN}0${END}) ${GREEN}test -f ./shrift${END}\n  (${GREEN}0${END}) ${GREEN}test -f ./shrift_test.sh${END}\n\n${GREEN}.${END}${GREEN}.${END}\n2 tests, 0 failed"
-assert "_main test/fixtures" "\n  (${RED}1${END}) ${RED}test -f notpresent${END}\n\n${RED}F${END}${GREEN}.${END}${GREEN}.${END}\n3 tests, 1 failed"
-assert "_main test/**/*_spec.sh" "\n  (${RED}1${END}) ${RED}test -f notpresent${END}\n\n${RED}F${END}${GREEN}.${END}${GREEN}.${END}\n3 tests, 1 failed"
-assert "_main test/fixtures/*_spec.sh" "\n  (${RED}1${END}) ${RED}test -f notpresent${END}\n\n${RED}F${END}${GREEN}.${END}${GREEN}.${END}\n3 tests, 1 failed"
+assert "_main test/fixtures" "\n  (${RED}1${END}) ${RED}test -f notpresent${END}\n\n${RED}F${END}${GREEN}.${END}${GREEN}.${END}${GREEN}.${END}${GREEN}.${END}${GREEN}.${END}\n6 tests, 1 failed"
+assert "_main test/**/*_spec.sh" "\n  (${RED}1${END}) ${RED}test -f notpresent${END}\n\n${RED}F${END}${GREEN}.${END}${GREEN}.${END}${GREEN}.${END}${GREEN}.${END}${GREEN}.${END}\n6 tests, 1 failed"
+assert "_main test/fixtures/*_spec.sh" "\n  (${RED}1${END}) ${RED}test -f notpresent${END}\n\n${RED}F${END}${GREEN}.${END}${GREEN}.${END}${GREEN}.${END}${GREEN}.${END}${GREEN}.${END}\n6 tests, 1 failed"
+
+# test function declaration
+assert_raises "./shrift test/fixtures/func_spec.sh" 0
+assert "./shrift -v test/fixtures/func_spec.sh" "\n  (${GREEN}0${END}) ${GREEN}_echo one${END}\n    one\n  (${GREEN}0${END}) ${GREEN}_puts one${END}\n    one\n  (${GREEN}0${END}) ${GREEN}_print one${END}\n    one\n\n${GREEN}.${END}${GREEN}.${END}${GREEN}.${END}\n3 tests, 0 failed"
 
 # test runtime usage
 assert_raises "./shrift -h" 0
