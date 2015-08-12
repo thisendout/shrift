@@ -20,6 +20,7 @@ function _usage() {
   echo "-s [hostname]      Target remote host via ssh"
   echo "-o '[opts]'        Raw CLI options to pass to SSH/Docker (must be in quotes)"
   echo "-v                 Enable verbose output"
+  echo "--nocolor          Disable color output"
   echo
 }
 
@@ -130,17 +131,19 @@ function _main() {
   driver='local'
   opts=''
   verbose=0
+  nocolor=0
   spec_files=()
 
   # parse cli args
   while [ ! -z $1 ]; do
     case $1 in
-      -h|--help) _usage; exit 0;;
-      -d)        shift; driver='docker'; target=$1;;
-      -s)        shift; driver='ssh'; target=$1;;
-      -o)        shift; opts="${1}";;
-      -v)        verbose=1;;
-      *)         spec_files+=("$1");;
+      -h|--help)  _usage; exit 0;;
+      -d)         shift; driver='docker'; target=$1;;
+      -s)         shift; driver='ssh'; target=$1;;
+      -o)         shift; opts="${1}";;
+      -v)         verbose=1;;
+      --nocolor)  nocolor=1;;
+      *)          spec_files+=("$1");;
     esac
     shift
   done
@@ -159,6 +162,13 @@ function _main() {
     if ! docker inspect $target &> /dev/null; then
       _error "No such container ${target}"
     fi
+  fi
+
+  # disable colors
+  if [ $nocolor -ne 0 ]; then
+    GREEN=''
+    RED=''
+    END=''
   fi
 
   # global run state
