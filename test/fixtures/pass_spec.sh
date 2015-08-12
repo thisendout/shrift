@@ -1,2 +1,2 @@
 test -f ./shrift
-test -f ./shrift_test.sh
+test -f ./shrift-test.sh
