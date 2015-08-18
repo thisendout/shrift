@@ -86,7 +86,7 @@ function _run_file() {
 
     # override attempts to source a file from spec and source in execution
     if [[ $firstcmd == "source" ]] || [[ $firstcmd == "." ]]; then
-      cd $(dirname $file) && source $(echo ${spec} | cut -d' ' -f2) && cd $CWD
+      cd "$(dirname $file)" && source $(echo ${spec} | cut -d' ' -f2) && cd "$CWD"
       continue
     fi
 
@@ -192,7 +192,7 @@ function _main() {
   for entry in "${spec_files[@]}"; do
     [ -f $entry ] && _run_file $entry
     if [ -d $entry ]; then
-      for child in $(find $entry -name "*_spec.sh" -maxdepth 1); do
+      for child in $(find $entry -maxdepth 1 -name "*_spec.sh"); do
         _run_file $child
       done
     fi
