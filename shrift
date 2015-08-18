@@ -162,6 +162,9 @@ function _main() {
     if ! docker inspect $target &> /dev/null; then
       _error "No such container ${target}"
     fi
+    if ! docker exec --help 2>&1 | grep -q "docker exec"; then
+      _error "Docker exec command not found; try upgrading docker"
+    fi
   fi
 
   # disable colors
